@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGRI NOVA | Dashboard</title>
+    <style>
+        :root { --cyan: #00e5ff; --bg-dark: #050a0f; }
+        body, html { margin: 0; padding: 0; width: 100vw; height: 100vh; background: var(--bg-dark); color: white; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+        .title { font-size: clamp(40px, 8vw, 70px); font-weight: 900; letter-spacing: 10px; color: #fff; text-shadow: 0 0 20px rgba(0,229,255,0.8); text-align: center; margin-bottom: 50px; }
+
+        .menu-container { display: flex; flex-direction: column; gap: 30px; width: 80%; max-width: 400px; }
+
+        .menu-btn {
+            padding: 25px; background: rgba(0, 229, 255, 0.05); border: 2px solid var(--cyan);
+            border-radius: 12px; color: var(--cyan); font-size: 20px; font-weight: bold; letter-spacing: 3px;
+            text-align: center; text-decoration: none; text-transform: uppercase; transition: 0.3s;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.2); cursor: pointer; display: block;
+        }
+
+        .menu-btn:hover, .menu-btn:active { background: var(--cyan); color: black; box-shadow: 0 0 30px var(--cyan); transform: scale(1.05); }
+        .subtext { font-size: 12px; color: #888; margin-top: 8px; letter-spacing: 1px; }
+    </style>
+</head>
+<body>
+    <div class="title">AGRI NOVA</div>
+
+    <div class="menu-container">
+        <a href="/scanner" class="menu-btn">
+            🌿 NEURAL SCANNER
+            <div class="subtext">Launch Diagnostic Optics</div>
+        </a>
+
+        <a href="/creator" class="menu-btn">
+            👨‍💻 SYSTEM ARCHITECT
+            <div class="subtext">View Creator Protocol</div>
+        </a>
+    </div>
+</body>
+</html>

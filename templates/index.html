@@ -1,0 +1,2104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width,
+                   initial-scale=1.0,
+                   maximum-scale=1.0,
+                   user-scalable=no">
+
+    <title>AGRI NOVA | OS</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;900&family=Playfair+Display:wght@700;900&display=swap"
+          rel="stylesheet">
+
+    <style>
+
+        :root {
+
+            --cyan: #00e5ff;
+            --purple: #7b2cbf;
+            --dark-bg: #050a0f;
+            --card-bg: #151a28;
+            --text-main: #ffffff;
+            --text-muted: #8e9bb0;
+            --arch-blue: #2a75d3;
+
+        }
+
+        * {
+
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+
+        }
+
+        html,
+        body {
+
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: var(--dark-bg);
+
+        }
+
+        body {
+
+            color: var(--text-main);
+            font-family: 'Montserrat', sans-serif;
+            -webkit-overflow-scrolling: touch;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+
+        }
+
+        /* =========================
+BOOT SCREEN
+========================= */
+
+        #boot-screen,
+        #boot-screen * {
+
+            font-family: 'Segoe UI', system-ui, sans-serif !important;
+
+        }
+
+        #boot-screen {
+
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: var(--dark-bg);
+            z-index: 10000;
+            transition: opacity 0.4s ease-in-out;
+
+        }
+
+        .title {
+
+            font-size: clamp(50px, 10vw, 90px);
+            font-weight: 900;
+            letter-spacing: 12px;
+            color: #fff;
+            text-shadow:
+                    0 0 10px rgba(0,229,255,0.9),
+                    0 0 20px rgba(0,229,255,0.7),
+                    0 0 40px rgba(0,229,255,0.5);
+            text-align: center;
+
+        }
+
+        .subtitle {
+
+            font-size: 13px;
+            letter-spacing: 5px;
+            color: #557788;
+            margin-top: 10px;
+            margin-bottom: 60px;
+            text-transform: uppercase;
+            text-align: center;
+
+        }
+
+        .loader-circle {
+
+            width: 80px;
+            height: 80px;
+            border: 3px solid rgba(0,229,255,0.15);
+            border-top: 3px solid var(--cyan);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 30px;
+            box-shadow: 0 0 15px rgba(0,229,255,0.2);
+            position: relative;
+
+        }
+
+        .loader-circle::after {
+
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 6px;
+            height: 6px;
+            background-color: var(--cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--cyan);
+
+        }
+
+        @keyframes spin {
+
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+
+        }
+
+        .progress-container {
+
+            width: 80%;
+            max-width: 400px;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            overflow: hidden;
+
+        }
+
+        .progress-bar {
+
+            height: 100%;
+            width: 0%;
+            background: var(--cyan);
+            box-shadow: 0 0 10px var(--cyan);
+
+        }
+
+        .percentage {
+
+            margin-top: 15px;
+            font-size: 12px;
+            color: var(--cyan);
+            letter-spacing: 2px;
+            font-weight: bold;
+
+        }
+
+        /* =========================
+MAIN APP
+========================= */
+
+        #main-app {
+
+            display: none;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s;
+
+        }
+
+        .app-container {
+
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+
+        }
+
+        /* =========================
+SIDEBAR
+========================= */
+
+        .sidebar {
+
+            width: 260px;
+            min-width: 260px;
+            background: var(--card-bg);
+            border-right: 1px solid rgba(255,255,255,0.05);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            transition: 0.3s ease;
+            z-index: 9999;
+            overflow-y: auto;
+
+        }
+
+        .brand {
+
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--cyan);
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+            text-align: center;
+            text-shadow: 0 0 10px var(--cyan);
+
+        }
+
+        .nav-item {
+
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+
+        }
+
+        .nav-item:hover,
+        .nav-item.active-nav {
+
+            background: rgba(0,229,255,0.1);
+            color: var(--cyan);
+            border-left: 4px solid var(--cyan);
+
+        }
+
+        /* =========================
+CONTENT AREA
+========================= */
+
+        .content-area {
+
+            flex: 1;
+            position: relative;
+            background: var(--dark-bg);
+            overflow: hidden;
+
+        }
+
+        .view {
+
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            padding: 30px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+
+        }
+
+        .view.active {
+
+            display: block;
+
+        }
+
+        #view-creator.active {
+
+            display: flex;
+
+        }
+
+        /* =========================
+MOBILE MENU
+========================= */
+
+        .mobile-menu-btn {
+
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            width: 52px;
+            height: 52px;
+            z-index: 10000;
+            border-radius: 12px;
+            background: rgba(10,15,20,0.95);
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            font-size: 30px;
+            cursor: pointer;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 15px rgba(0,229,255,0.3);
+
+        }
+
+        /* =========================
+DASHBOARD
+========================= */
+
+        .dash-grid {
+
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            height: 100%;
+
+        }
+
+        .dash-left {
+
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+
+        }
+
+        .hero-card {
+
+            background: linear-gradient(135deg,#1a0b2e,#0f172a);
+            border-radius: 22px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid rgba(0,229,255,0.2);
+
+        }
+
+        .hero-title {
+
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            font-weight: 900;
+            margin-bottom: 10px;
+            color: #fff;
+
+        }
+
+        .hero-sub {
+
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            line-height: 1.7;
+
+        }
+
+        .hero-btn {
+
+            background: var(--cyan);
+            color: #000;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 900;
+            cursor: pointer;
+            border: none;
+            transition: 0.3s;
+            box-shadow: 0 0 15px rgba(0,229,255,0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+
+        }
+
+        .hero-btn:hover {
+
+            transform: scale(1.05);
+
+        }
+                .stats-row {
+
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 20px;
+
+        }
+
+        .stat-card {
+
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border: 1px solid rgba(255,255,255,0.05);
+
+        }
+
+        .stat-title {
+
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+
+        }
+
+        .stat-value {
+
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--cyan);
+
+        }
+
+        .analytics-card,
+        .side-card {
+
+            background: var(--card-bg);
+            border-radius: 22px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.05);
+
+        }
+
+        .analytics-card {
+
+            flex: 1;
+
+        }
+
+        .dash-right {
+
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+
+        }
+
+        .card-header {
+
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+            color: #fff;
+
+        }
+
+        .timeline-item {
+
+            margin-bottom: 15px;
+            padding-left: 15px;
+            border-left: 2px solid var(--cyan);
+
+        }
+
+        .time-title {
+
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 5px;
+
+        }
+
+        .time-sub {
+
+            font-size: 12px;
+            color: var(--text-muted);
+
+        }
+
+        /* =========================
+SCANNER VIEW
+========================= */
+
+        #view-scanner {
+
+            padding: 0;
+            background: #000;
+
+        }
+
+        #camera-feed {
+
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background: #000;
+
+        }
+
+        .scanner-ui {
+
+            position: absolute;
+            inset: 0;
+            z-index: 5;
+            pointer-events: none;
+
+        }
+
+        /* =========================
+TOP HUD
+========================= */
+
+        .hud-top {
+
+            position: absolute;
+            top: 0;
+            width: 100%;
+            padding: 25px;
+            background: linear-gradient(
+                    to bottom,
+                    rgba(0,0,0,0.75),
+                    transparent
+            );
+
+            text-align: center;
+            pointer-events: none;
+            z-index: 30;
+
+        }
+
+        #sys-status {
+
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--cyan);
+            text-shadow: 0 0 10px var(--cyan);
+            margin-bottom: 8px;
+
+        }
+
+        #disease-name {
+
+            font-size: 15px;
+            letter-spacing: 1px;
+            color: #ddd;
+
+        }
+
+        /* =========================
+RETICLE
+========================= */
+
+        #reticle-container {
+
+            position: absolute;
+            inset: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+        }
+
+        #reticle {
+
+            width: 320px;
+            height: 320px;
+            position: relative;
+            border-radius: 20px;
+            border: 2px solid rgba(0,229,255,0.25);
+            box-shadow: 0 0 20px rgba(0,229,255,0.2);
+
+        }
+
+        .corner {
+
+            position: absolute;
+            width: 45px;
+            height: 45px;
+            border-color: var(--cyan);
+            border-style: solid;
+            border-width: 0;
+
+        }
+
+        .corner.tl {
+
+            top: -2px;
+            left: -2px;
+            border-top-width: 5px;
+            border-left-width: 5px;
+
+        }
+
+        .corner.tr {
+
+            top: -2px;
+            right: -2px;
+            border-top-width: 5px;
+            border-right-width: 5px;
+
+        }
+
+        .corner.bl {
+
+            bottom: -2px;
+            left: -2px;
+            border-bottom-width: 5px;
+            border-left-width: 5px;
+
+        }
+
+        .corner.br {
+
+            bottom: -2px;
+            right: -2px;
+            border-bottom-width: 5px;
+            border-right-width: 5px;
+
+        }
+
+        /* =========================
+SCANNER LINE
+========================= */
+
+        #scanner-line {
+
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background: var(--cyan);
+            box-shadow: 0 0 15px var(--cyan);
+            display: none;
+
+        }
+
+        @keyframes verticalSweep {
+
+            0% {
+
+                top: 0%;
+
+            }
+
+            100% {
+
+                top: calc(100% - 3px);
+
+            }
+
+        }
+
+        /* =========================
+BOTTOM HUD
+========================= */
+
+        .hud-bottom {
+
+            position: absolute;
+            bottom: calc(20px + env(safe-area-inset-bottom));
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 50;
+            padding-bottom: 10px;
+
+        }
+
+        /* =========================
+SCANNER CONTROLS
+========================= */
+
+        .scanner-controls {
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            pointer-events: auto;
+            flex-wrap: nowrap;
+
+        }
+
+        .control-btn {
+
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid var(--cyan);
+            background: rgba(0,229,255,0.12);
+            color: var(--cyan);
+            font-size: 22px;
+            cursor: pointer;
+            transition: 0.3s;
+            backdrop-filter: blur(10px);
+            flex-shrink: 0;
+
+        }
+
+        .control-btn:hover {
+
+            background: var(--cyan);
+            color: #000;
+
+        }
+
+        #scan-btn {
+
+            width: 82px;
+            height: 82px;
+            border-radius: 50%;
+            border: 3px solid var(--cyan);
+            background: rgba(0,229,255,0.15);
+            color: var(--cyan);
+            font-size: 14px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: 0.3s;
+            letter-spacing: 2px;
+            box-shadow: 0 0 20px rgba(0,229,255,0.4);
+            flex-shrink: 0;
+
+        }
+
+        #scan-btn:hover {
+
+            transform: scale(1.06);
+            background: var(--cyan);
+            color: #000;
+
+        }
+                /* =========================
+ARCHITECT CARD
+========================= */
+
+        #view-creator {
+
+            justify-content: flex-start;
+            align-items: center;
+            background: #050a0f;
+            padding: 20px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+
+        }
+
+        .architect-card {
+
+            width: 100%;
+            max-width: 720px;
+            background: #ffffff;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            margin-top: 80px;
+            margin-bottom: 120px;
+
+        }
+
+        .architect-header {
+
+            background: linear-gradient(
+                    90deg,
+                    #1565c0,
+                    #42a5f5
+            );
+
+            color: white;
+            padding: 22px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+        }
+
+        .header-left {
+
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 900;
+            font-size: 24px;
+
+        }
+
+        .header-left svg {
+
+            width: 28px;
+            fill: white;
+
+        }
+
+        .header-close {
+
+            font-size: 36px;
+            cursor: pointer;
+
+        }
+
+        .architect-body {
+
+            padding: 40px;
+
+        }
+
+        .architect-photo-wrapper {
+
+            display: flex;
+            justify-content: center;
+            margin-bottom: 35px;
+
+        }
+
+        .architect-photo {
+
+            width: 190px;
+            height: 190px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 6px solid var(--cyan);
+            box-shadow: 0 0 25px rgba(0,229,255,0.5);
+
+        }
+
+        .architect-row {
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 0;
+            border-bottom: 1px solid #ddd;
+            gap: 20px;
+
+        }
+
+        .architect-row-label {
+
+            font-size: 16px;
+            font-weight: 700;
+            color: #444;
+
+        }
+
+        .architect-row-val {
+
+            font-size: 16px;
+            font-weight: 800;
+            color: #111;
+            text-align: right;
+
+        }
+
+        .architect-about {
+
+            margin-top: 30px;
+
+        }
+
+        .architect-about-header {
+
+            font-size: 20px;
+            font-weight: 900;
+            margin-bottom: 15px;
+            color: #111;
+
+        }
+
+        .architect-about p {
+
+            font-size: 13px;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 15px;
+            text-align: justify;
+
+        }
+
+        /* =========================
+MOBILE RESPONSIVE
+========================= */
+
+        @media (max-width: 900px) {
+
+            .mobile-menu-btn {
+
+                display: flex;
+
+            }
+
+            .sidebar {
+
+                position: fixed;
+                left: -270px;
+                top: 0;
+                height: 100%;
+                z-index: 9999;
+                box-shadow: 0 0 30px rgba(0,0,0,0.8);
+
+            }
+
+            .sidebar.mobile-open {
+
+                left: 0;
+
+            }
+
+            .view {
+
+                padding: 80px 15px 15px 15px;
+
+            }
+
+            .dash-grid {
+
+                grid-template-columns: 1fr;
+                gap: 20px;
+
+            }
+
+            .stats-row {
+
+                grid-template-columns: 1fr;
+
+            }
+
+            .hero-title {
+
+                font-size: 30px;
+
+            }
+
+            #reticle {
+
+                width: 75vw;
+                height: 75vw;
+
+            }
+
+            .architect-card {
+
+                max-width: 100%;
+                margin-top: 90px;
+                margin-bottom: 160px;
+
+            }
+
+            #view-creator {
+
+                padding-bottom: 180px;
+
+            }
+
+            .architect-body {
+
+                padding: 25px;
+
+            }
+
+            .architect-photo {
+
+                width: 150px;
+                height: 150px;
+
+            }
+
+            .architect-row {
+
+                flex-direction: column;
+                align-items: flex-start;
+
+            }
+
+            .architect-row-val {
+
+                text-align: left;
+
+            }
+
+            .hud-bottom {
+
+                bottom: 8px;
+
+            }
+
+            .scanner-controls {
+
+                gap: 10px;
+
+            }
+
+            .control-btn {
+
+                width: 52px;
+                height: 52px;
+                font-size: 18px;
+
+            }
+
+            #scan-btn {
+
+                width: 74px;
+                height: 74px;
+                font-size: 13px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- =========================
+BOOT SCREEN
+========================= -->
+
+<div id="boot-screen">
+
+    <h1 class="title">
+
+        AGRI NOVA
+
+    </h1>
+
+    <div class="subtitle">
+
+        ADVANCED BOTANICAL DIAGNOSTICS
+
+    </div>
+
+    <div class="loader-circle"></div>
+
+    <div style="
+        font-size:14px;
+        color:var(--cyan);
+        letter-spacing:3px;
+        margin-bottom:15px;
+        font-weight:600;
+    ">
+
+        CALIBRATING OPTICS
+
+    </div>
+
+    <div class="progress-container">
+
+        <div class="progress-bar"
+             id="load-bar"></div>
+
+    </div>
+
+    <div class="percentage"
+         id="boot-perc">
+
+        0 %
+
+    </div>
+
+</div>
+
+<!-- =========================
+MAIN APP
+========================= -->
+
+<div id="main-app">
+
+    <!-- MOBILE MENU -->
+
+    <div class="mobile-menu-btn"
+         onclick="toggleMobileMenu()">
+
+        ☰
+
+    </div>
+
+    <div class="app-container">
+
+        <!-- SIDEBAR -->
+
+        <div class="sidebar">
+
+            <div class="brand">
+
+                AGRI NOVA
+
+            </div>
+
+            <div class="nav-item active-nav"
+                 onclick="switchView('view-home', this)">
+
+                🏠 Dashboard
+
+            </div>
+
+            <div class="nav-item"
+                 onclick="switchView('view-scanner', this)">
+
+                📷 AI Scanner
+
+            </div>
+
+            <div class="nav-item"
+                 onclick="switchView('view-creator', this)">
+
+                👨‍💻 Architect Info
+
+            </div>
+
+        </div>
+
+        <!-- CONTENT AREA -->
+
+        <div class="content-area">            <!-- =========================
+HOME VIEW
+========================= -->
+
+            <div id="view-home"
+                 class="view active">
+
+                <div class="dash-grid">
+
+                    <!-- LEFT -->
+
+                    <div class="dash-left">
+
+                        <!-- HERO -->
+
+                        <div class="hero-card">
+
+                            <div class="hero-title"
+                                 id="greeting-text">
+
+                                Good Afternoon.
+
+                            </div>
+
+                            <div class="hero-sub">
+
+                                AI diagnostic core is loaded and
+                                ready for deployment. Your systems
+                                are optimal and operational.
+
+                            </div>
+
+                            <button class="hero-btn"
+                                    onclick="document.querySelectorAll('.nav-item')[1].click()">
+
+                                Initialize Scan
+
+                            </button>
+
+                        </div>
+
+                        <!-- STATS -->
+
+                        <div class="stats-row">
+
+                            <div class="stat-card">
+
+                                <span class="stat-title">
+
+                                    Query Latency
+
+                                </span>
+
+                                <span class="stat-value"
+                                      style="color:#39ff14;">
+
+                                    30.15 ms
+
+                                </span>
+
+                            </div>
+
+                            <div class="stat-card">
+
+                                <span class="stat-title">
+
+                                    Uplink Volume
+
+                                </span>
+
+                                <span class="stat-value">
+
+                                    22.40 TB
+
+                                </span>
+
+                            </div>
+
+                            <div class="stat-card">
+
+                                <span class="stat-title">
+
+                                    System Stability
+
+                                </span>
+
+                                <span class="stat-value">
+
+                                    98%
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <!-- ANALYTICS -->
+
+                        <div class="analytics-card">
+
+                            <div class="card-header">
+
+                                Diagnostic Accuracy Overview
+
+                            </div>
+
+                            <div style="
+                                height:150px;
+                                display:flex;
+                                align-items:flex-end;
+                                gap:20px;
+                                border-bottom:1px solid #333;
+                                padding-bottom:10px;
+                            ">
+
+                                <div style="
+                                    width:15%;
+                                    height:40%;
+                                    background:#2b4c7e;
+                                    border-radius:5px 5px 0 0;
+                                "></div>
+
+                                <div style="
+                                    width:15%;
+                                    height:60%;
+                                    background:#2b4c7e;
+                                    border-radius:5px 5px 0 0;
+                                "></div>
+
+                                <div style="
+                                    width:15%;
+                                    height:85%;
+                                    background:var(--cyan);
+                                    border-radius:5px 5px 0 0;
+                                "></div>
+
+                                <div style="
+                                    width:15%;
+                                    height:70%;
+                                    background:#2b4c7e;
+                                    border-radius:5px 5px 0 0;
+                                "></div>
+
+                                <div style="
+                                    width:15%;
+                                    height:98%;
+                                    background:var(--cyan);
+                                    border-radius:5px 5px 0 0;
+                                    position:relative;
+                                ">
+
+                                    <div style="
+                                        position:absolute;
+                                        top:-25px;
+                                        left:-10px;
+                                        background:#fff;
+                                        color:#000;
+                                        padding:2px 8px;
+                                        border-radius:5px;
+                                        font-size:12px;
+                                        font-weight:bold;
+                                    ">
+
+                                        98%
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- RIGHT -->
+
+                    <div class="dash-right">
+
+                        <!-- TIME -->
+
+                        <div class="side-card">
+
+                            <div class="card-header">
+
+                                System Time
+
+                            </div>
+
+                            <div id="live-time"
+                                 style="
+                                    text-align:center;
+                                    font-size:48px;
+                                    font-weight:900;
+                                    color:var(--cyan);
+                                    letter-spacing:2px;
+                                 ">
+
+                                00:00
+
+                            </div>
+
+                            <div id="live-date"
+                                 style="
+                                    text-align:center;
+                                    color:var(--text-muted);
+                                    margin-bottom:10px;
+                                    font-weight:600;
+                                    text-transform:uppercase;
+                                 ">
+
+                                Date
+
+                            </div>
+
+                        </div>
+
+                        <!-- ACTIVITY -->
+
+                        <div class="side-card"
+                             style="flex:1;">
+
+                            <div class="card-header">
+
+                                Activity Log
+
+                            </div>
+
+                            <div class="timeline-item">
+
+                                <div class="time-title">
+
+                                    Server Boot Sequence
+
+                                </div>
+
+                                <div class="time-sub">
+
+                                    All modules loaded successfully.
+
+                                </div>
+
+                            </div>
+
+                            <div class="timeline-item">
+
+                                <div class="time-title">
+
+                                    API Authentication
+
+                                </div>
+
+                                <div class="time-sub">
+
+                                    Gemini secure key verified.
+
+                                </div>
+
+                            </div>
+
+                            <div class="timeline-item"
+                                 style="border-left-color:#333;">
+
+                                <div class="time-title"
+                                     style="color:#666;">
+
+                                    Optical Sensor
+
+                                </div>
+
+                                <div class="time-sub">
+
+                                    Awaiting manual initialization.
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- =========================
+SCANNER VIEW
+========================= -->
+
+            <div id="view-scanner"
+                 class="view">
+
+                <video id="camera-feed"
+                       autoplay
+                       playsinline></video>
+
+                <div class="scanner-ui">
+
+                    <!-- TOP HUD -->
+
+                    <div class="hud-top">
+
+                        <div style="
+                            font-size:12px;
+                            color:var(--cyan);
+                            font-weight:800;
+                            letter-spacing:3px;
+                            margin-bottom:5px;
+                        ">
+
+                            DIAGNOSTIC UPLINK
+
+                        </div>
+
+                        <div id="sys-status">
+
+                            AWAITING TARGET
+
+                        </div>
+
+                        <div id="disease-name">
+
+                            Focus camera on plant leaf
+
+                        </div>
+
+                    </div>
+
+                    <!-- RETICLE -->
+
+                    <div id="reticle-container">
+
+                        <div id="reticle">
+
+                            <div id="scanner-line"></div>
+
+                            <div class="corner tl"></div>
+                            <div class="corner tr"></div>
+                            <div class="corner bl"></div>
+                            <div class="corner br"></div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- BOTTOM HUD -->
+
+                    <div class="hud-bottom">
+
+                        <div class="scanner-controls">
+
+                            <!-- FLASH -->
+
+                            <button class="control-btn"
+                                    onclick="toggleFlash()">
+
+                                ⚡
+
+                            </button>
+
+                            <!-- SCAN -->
+
+                            <button id="scan-btn"
+                                    onclick="captureAndScan()">
+
+                                SCAN
+
+                            </button>
+
+                            <!-- SWITCH CAMERA -->
+
+                            <button class="control-btn"
+                                    onclick="switchCamera()">
+
+                                🔄
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+                        <!-- =========================
+CREATOR VIEW
+========================= -->
+
+            <div id="view-creator"
+                 class="view">
+
+                <div class="architect-card">
+
+                    <!-- HEADER -->
+
+                    <div class="architect-header">
+
+                        <div class="header-left">
+
+                            <svg viewBox="0 0 24 24">
+
+                                <path d="M12 2v20h-2v-2h-2v2h-2v-4h-2v4h-2v-16h10zm4 4h6v16h-6v-16z"/>
+
+                            </svg>
+
+                            <span>
+
+                                ARCHITECT INFO
+
+                            </span>
+
+                        </div>
+
+                        <div class="header-close"
+                             onclick="document.querySelectorAll('.nav-item')[0].click()">
+
+                            ×
+
+                        </div>
+
+                    </div>
+
+                    <!-- BODY -->
+
+                    <div class="architect-body">
+
+                        <!-- PROFILE IMAGE -->
+
+                        <div class="architect-photo-wrapper">
+
+                            <img src="{{ url_for('static', filename='profile.jpeg') }}"
+                                 alt="Creator Photo"
+                                 class="architect-photo"
+                                 onerror="this.src='https://via.placeholder.com/170/00e5ff/000'">
+
+                        </div>
+
+                        <!-- CREATOR -->
+
+                        <div class="architect-row">
+
+                            <span class="architect-row-label">
+
+                                👤 Creator
+
+                            </span>
+
+                            <span class="architect-row-val">
+
+                                K M D T Harinadh Reddy
+
+                            </span>
+
+                        </div>
+
+                        <!-- DESIGNATION -->
+
+                        <div class="architect-row">
+
+                            <span class="architect-row-label">
+
+                                💼 Designation
+
+                            </span>
+
+                            <span class="architect-row-val">
+
+                                Engineer, Tech Lead of this web
+
+                            </span>
+
+                        </div>
+
+                        <!-- DATE -->
+
+                        <div class="architect-row">
+
+                            <span class="architect-row-label">
+
+                                📅 Created on
+
+                            </span>
+
+                            <span class="architect-row-val">
+
+                                23-05-2026
+
+                            </span>
+
+                        </div>
+
+                        <!-- APP -->
+
+                        <div class="architect-row">
+
+                            <span class="architect-row-label">
+
+                                🚀 Application Name
+
+                            </span>
+
+                            <span class="architect-row-val">
+
+                                Smart_nova
+
+                            </span>
+
+                        </div>
+
+                        <!-- DESCRIPTION -->
+
+                        <div class="architect-about">
+
+                            <div class="architect-about-header">
+
+                                ℹ About this application
+
+                            </div>
+
+                            <p>
+
+                                Smart_nova is an advanced AI-powered
+                                agriculture and crop diagnostic platform
+                                developed for intelligent plant health
+                                analysis and automated disease detection
+                                using modern artificial intelligence.
+
+                            </p>
+
+                            <p>
+
+                                The platform combines high-performance
+                                UI systems, camera integration, neural
+                                diagnostics, and real-time scanning
+                                architecture to support next-generation
+                                smart farming systems.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+HIDDEN CANVAS
+========================= -->
+
+<canvas id="hidden-canvas"></canvas>
+
+<!-- =========================
+JAVASCRIPT
+========================= -->
+
+<script>
+
+let cameraActive = false;
+let currentStream = null;
+let usingFrontCamera = false;
+let flashEnabled = false;
+
+/* =========================
+BOOT LOADER
+========================= */
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    let perc = 0;
+
+    const bootText =
+        document.getElementById('boot-perc');
+
+    const loadBar =
+        document.getElementById('load-bar');
+
+    const bootScreen =
+        document.getElementById('boot-screen');
+
+    const mainApp =
+        document.getElementById('main-app');
+
+    const interval = setInterval(() => {
+
+        perc += 2;
+
+        bootText.innerText = perc + " %";
+
+        loadBar.style.width = perc + "%";
+
+        if(perc >= 100) {
+
+            clearInterval(interval);
+
+            bootScreen.style.opacity = '0';
+
+            setTimeout(() => {
+
+                bootScreen.style.display = 'none';
+
+                mainApp.style.display = 'block';
+
+                setTimeout(() => {
+
+                    mainApp.style.opacity = '1';
+
+                }, 50);
+
+            }, 400);
+
+        }
+
+    }, 20);
+
+    updateTime();
+
+    setInterval(updateTime, 1000);
+
+});
+
+/* =========================
+TIME
+========================= */
+
+function updateTime() {
+
+    const now = new Date();
+
+    let hours = now.getHours();
+
+    let minutes = now.getMinutes();
+
+    let ampm = hours >= 12 ? 'PM' : 'AM';
+
+    let greeting = "Good Evening.";
+
+    if(hours < 12) {
+
+        greeting = "Good Morning.";
+
+    }
+
+    else if(hours < 18) {
+
+        greeting = "Good Afternoon.";
+
+    }
+
+    document.getElementById('greeting-text')
+        .innerText = greeting;
+
+    hours = hours % 12;
+
+    hours = hours ? hours : 12;
+
+    minutes = minutes < 10
+        ? '0' + minutes
+        : minutes;
+
+    document.getElementById('live-time')
+        .innerText =
+            hours + ':' + minutes + ' ' + ampm;
+
+    const options = {
+
+        weekday:'long',
+        month:'short',
+        day:'numeric',
+        year:'numeric'
+
+    };
+
+    document.getElementById('live-date')
+        .innerText =
+            now.toLocaleDateString('en-US', options);
+
+}
+
+/* =========================
+MOBILE MENU
+========================= */
+
+function toggleMobileMenu() {
+
+    document.querySelector('.sidebar')
+        .classList.toggle('mobile-open');
+
+}
+
+/* =========================
+VIEW SWITCH
+========================= */
+
+function switchView(viewId, navElement) {
+
+    document.querySelectorAll('.nav-item')
+        .forEach(n => n.classList.remove('active-nav'));
+
+    navElement.classList.add('active-nav');
+
+    document.querySelectorAll('.view')
+        .forEach(v => v.classList.remove('active'));
+
+    document.getElementById(viewId)
+        .classList.add('active');
+
+    if(viewId === 'view-scanner' && !cameraActive) {
+
+        startCamera();
+
+    }
+
+    if(window.innerWidth <= 900) {
+
+        document.querySelector('.sidebar')
+            .classList.remove('mobile-open');
+
+    }
+
+}
+
+/* =========================
+CAMERA
+========================= */
+
+async function startCamera() {
+
+    const video =
+        document.getElementById('camera-feed');
+
+    try {
+
+        currentStream =
+            await navigator.mediaDevices.getUserMedia({
+
+                video: {
+
+                    facingMode:
+                        usingFrontCamera
+                            ? "user"
+                            : "environment"
+
+                }
+
+            });
+
+        video.srcObject = currentStream;
+
+        cameraActive = true;
+
+    }
+
+    catch(err) {
+
+        console.error(err);
+
+        alert("Please allow camera permission.");
+
+    }
+
+}
+
+/* SWITCH CAMERA */
+
+async function switchCamera() {
+
+    usingFrontCamera = !usingFrontCamera;
+
+    if(currentStream) {
+
+        currentStream.getTracks()
+            .forEach(track => track.stop());
+
+    }
+
+    startCamera();
+
+}
+
+/* FLASH */
+
+async function toggleFlash() {
+
+    if(!currentStream) return;
+
+    const track =
+        currentStream.getVideoTracks()[0];
+
+    const capabilities =
+        track.getCapabilities();
+
+    if(!capabilities.torch) {
+
+        alert("Flash not supported on this device.");
+
+        return;
+
+    }
+
+    flashEnabled = !flashEnabled;
+
+    try {
+
+        await track.applyConstraints({
+
+            advanced: [{
+
+                torch: flashEnabled
+
+            }]
+
+        });
+
+    }
+
+    catch(err) {
+
+        console.log(err);
+
+    }
+
+}
+
+/* =========================
+AI SCAN
+========================= */
+
+async function captureAndScan() {
+
+    if(!currentStream) return;
+
+    const btn =
+        document.getElementById('scan-btn');
+
+    const video =
+        document.getElementById('camera-feed');
+
+    const scannerLine =
+        document.getElementById('scanner-line');
+
+    btn.innerText = "...";
+
+    document.getElementById('sys-status')
+        .innerText = "ANALYZING...";
+
+    scannerLine.style.display = 'block';
+
+    scannerLine.style.animation =
+        'verticalSweep 1.8s infinite linear';
+
+    const canvas =
+        document.getElementById('hidden-canvas');
+
+    canvas.width = 512;
+    canvas.height = 512;
+
+    const ctx =
+        canvas.getContext('2d');
+
+    ctx.drawImage(video,0,0,512,512);
+
+    const base64Image =
+        canvas.toDataURL('image/jpeg',0.8)
+        .split(',')[1];
+
+    try {
+
+        const response =
+            await fetch('/scan', {
+
+                method:'POST',
+
+                headers:{
+                    'Content-Type':'application/json'
+                },
+
+                body: JSON.stringify({
+
+                    image: base64Image
+
+                })
+
+            });
+
+        const data = await response.json();
+
+        const text =
+            data.candidates[0]
+                .content.parts[0]
+                .text.trim();
+
+        const parts =
+            text.split('|');
+
+        if(parts[0].includes("HEALTHY")) {
+
+            document.getElementById('sys-status')
+                .innerText = "HEALTHY";
+
+            document.getElementById('sys-status')
+                .style.color = "#39ff14";
+
+        }
+
+        else {
+
+            document.getElementById('sys-status')
+                .innerText = "INFECTED";
+
+            document.getElementById('sys-status')
+                .style.color = "#ff003c";
+
+        }
+
+        document.getElementById('disease-name')
+            .innerText =
+                parts[1] + " (" + parts[2] + "%)";
+
+    }
+
+    catch(err) {
+
+        document.getElementById('sys-status')
+            .innerText = "NETWORK ERROR";
+
+        document.getElementById('disease-name')
+            .innerText = "Check connection";
+
+    }
+
+    scannerLine.style.display = 'none';
+
+    scannerLine.style.animation = 'none';
+
+    btn.innerText = "SCAN";
+
+}
+
+/* =========================
+CAMERA CLEANUP
+========================= */
+
+window.addEventListener('beforeunload', () => {
+
+    if(currentStream) {
+
+        currentStream.getTracks()
+            .forEach(track => track.stop());
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
