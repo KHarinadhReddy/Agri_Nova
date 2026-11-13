@@ -1,4 +1,4 @@
 Flask
 google-generativeai
-python-dotenv
+pythnhgtfvbon-dotehgbn
 gunicorn
